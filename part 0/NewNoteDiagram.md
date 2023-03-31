@@ -23,6 +23,6 @@ sequenceDiagram
     deactivate server
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
     activate server
-    server-->>browser:
-
+    server-->>browser: [{ "content": "list of datas", "date": "2023-3-31" }, ... ]
+    deactivate server
 ```
