@@ -3,6 +3,7 @@ sequenceDiagram
     participant browser
     participant server
 
+    Note right of browser: User fill the form and submit it
     browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
     activate server
     server-->>browser: 302 redirect to /exampleapp/notes
@@ -24,5 +25,6 @@ sequenceDiagram
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
     activate server
     server-->>browser: [{ "content": "list of datas", "date": "2023-3-31" }, ... ]
+    Note left of browser: the browser run the function that render the note from the json
     deactivate server
 ```
