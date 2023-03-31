@@ -5,5 +5,5 @@ sequenceDiagram
 
     browser->>server POST https://studies.cs.helsinki.fi/exampleapp/new_note
     activate server
-    server->>302 redirect to /exampleapp/notes
+    server->>browser 302 redirect to /exampleapp/notes
 ```
