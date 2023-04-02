@@ -5,14 +5,16 @@ const Statics = ({ good, bad, neutral, sum }) => {
     return <p>No Feedback given</p>;
   }
   return (
-    <div>
-      <StatisticLine text={"good"} value={good} />
-      <StatisticLine text={"neutral"} value={neutral} />
-      <StatisticLine text={"bad"} value={bad} />
-      <StatisticLine text={"all"} value={sum} />
-      <StatisticLine text={"avarage"} value={(good * 1 + bad * -1) / sum} />
-      <StatisticLine text={"positive"} value={`${(good * 1) / sum}%`} />
-    </div>
+    <table>
+      <tbody>
+        <StatisticLine text={"good"} value={good} />
+        <StatisticLine text={"neutral"} value={neutral} />
+        <StatisticLine text={"bad"} value={bad} />
+        <StatisticLine text={"all"} value={sum} />
+        <StatisticLine text={"avarage"} value={(good * 1 + bad * -1) / sum} />
+        <StatisticLine text={"positive"} value={`${(good * 1) / sum}%`} />
+      </tbody>
+    </table>
   );
 };
 
@@ -22,9 +24,10 @@ const Button = ({ text, handler }) => {
 
 const StatisticLine = ({ text, value }) => {
   return (
-    <p>
-      {text} {value}
-    </p>
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
   );
 };
 
