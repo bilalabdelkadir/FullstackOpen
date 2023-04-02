@@ -21,6 +21,7 @@ const App = () => {
     4: 4,
     5: 2,
     6: 3,
+    7: 2,
   });
 
   const onNextAnecdotes = () => {
@@ -35,13 +36,34 @@ const App = () => {
     setVotes(copy);
   };
 
+  const getMostVoted = () => {
+    let mostVoted = 0;
+    let mostVotedIndex = 0;
+
+    for (const index in votes) {
+      if (votes[index] > mostVoted) {
+        mostVoted = votes[index];
+        mostVotedIndex = index;
+      }
+    }
+    return mostVotedIndex;
+  };
+
   return (
-    <div>
-      <p>{anecdotes[selected]}</p>
-      <p>has {votes[selected]} votes</p>
-      <button onClick={onVote}>vote</button>
-      <button onClick={onNextAnecdotes}>next anecdotes</button>
-    </div>
+    <>
+      <div>
+        <h2>Anecdote of the day</h2>
+        <p>{anecdotes[selected]}</p>
+        <p>has {votes[selected]} votes</p>
+        <button onClick={onVote}>vote</button>
+        <button onClick={onNextAnecdotes}>next anecdotes</button>
+      </div>
+      <div>
+        <h2>Anecdote with the most votes</h2>
+        <p>{anecdotes[getMostVoted()]}</p>
+        <p>has {votes[getMostVoted()]} votes</p>
+      </div>
+    </>
   );
 };
 
