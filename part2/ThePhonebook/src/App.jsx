@@ -1,5 +1,48 @@
 import { useState } from "react";
 
+const PersonForm = ({
+  onSubmit,
+  newName,
+  nameInput,
+  NewPhoneNumber,
+  phoneInput,
+}) => {
+  return (
+    <form onSubmit={onSubmit}>
+      <h2>Add New PhoneBook</h2>
+      <div>
+        name: <input value={newName} onChange={nameInput} />
+      </div>
+      <div>
+        number: <input value={NewPhoneNumber} onChange={phoneInput} />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  );
+};
+
+const Persons = ({ filteredPersons }) => {
+  return (
+    <>
+      {filteredPersons.map((person) => (
+        <p key={person.id}>
+          {person.name} {person.number}
+        </p>
+      ))}
+    </>
+  );
+};
+
+const Filter = ({ filterInput, filterValue }) => {
+  return (
+    <div>
+      filer shown with: <input value={filterValue} onChange={filterInput} />
+    </div>
+  );
+};
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: "Arto Hellas", number: "040-123456", id: 1 },
@@ -50,27 +93,16 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filer shown with: <input value={filterValue} onChange={filterInput} />
-      </div>
-      <form onSubmit={onSubmit}>
-        <h2>Add New PhoneBook</h2>
-        <div>
-          name: <input value={newName} onChange={nameInput} />
-        </div>
-        <div>
-          number: <input value={NewPhoneNumber} onChange={phoneInput} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Filter filterValue={filterValue} filterInput={filterInput} />
+      <PersonForm
+        onSubmit={onSubmit}
+        newName={newName}
+        phoneInput={phoneInput}
+        nameInput={nameInput}
+        NewPhoneNumber={NewPhoneNumber}
+      />
       <h2>Numbers</h2>
-      {filteredPersons.map((person) => (
-        <p key={person.id}>
-          {person.name} {person.number}
-        </p>
-      ))}
+      <Persons filteredPersons={filteredPersons} />
     </div>
   );
 };
