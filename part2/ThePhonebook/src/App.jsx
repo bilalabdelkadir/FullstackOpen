@@ -71,15 +71,26 @@ const App = () => {
       name: newName,
       number: NewPhoneNumber,
     };
-    if (
-      persons.some(
-        (person) =>
-          person.name === newPerson.name || person.number === newPerson.number
-      )
-    ) {
-      alert(
-        `${newPerson.name} and ${newPerson.number} is already added to the phonebook`
+
+    const existingPerson = persons.find(
+      (person) => person.name === newPerson.name
+    );
+
+    if (existingPerson) {
+      const confirmReplace = window.confirm(
+        `${newPerson.name} is already added to phonebook, replace the old number with the new one?`
       );
+
+      if (confirmReplace) {
+        const updatedPerson = { ...existingPerson, number: newPerson.number };
+        phoneBook.update(updatedPerson).then((returnedPerson) => {
+          setPersons(
+            persons.map((person) =>
+              person.id !== existingPerson.id ? person : returnedPerson
+            )
+          );
+        });
+      }
     } else {
       phoneBook.create(newPerson).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
