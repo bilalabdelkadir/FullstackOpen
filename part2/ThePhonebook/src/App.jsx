@@ -1,12 +1,26 @@
 import { useState, useEffect } from "react";
 import phoneBook from "./services/PhoneBook";
 
-const Notification = ({ message, onCloseMessage }) => {
+const SuccessNotification = ({ message, onCloseMessage }) => {
   if (!message) {
     return null;
   }
   return (
     <div className="success">
+      {message}{" "}
+      <button onClick={onCloseMessage} className="closeButton">
+        X
+      </button>
+    </div>
+  );
+};
+
+const ErrorNotification = ({ message, onCloseMessage }) => {
+  if (!message) {
+    return null;
+  }
+  return (
+    <div className="error">
       {message}{" "}
       <button onClick={onCloseMessage} className="closeButton">
         X
@@ -64,7 +78,8 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [NewPhoneNumber, setNewPhoneNumber] = useState("");
   const [filterValue, setFilterValue] = useState("");
-  const [sucessMessage, setSucessMessage] = useState("sddd");
+  const [sucessMessage, setSucessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     phoneBook.getAll().then((allNumbers) => setPersons(allNumbers));
@@ -98,13 +113,20 @@ const App = () => {
 
       if (confirmReplace) {
         const updatedPerson = { ...existingPerson, number: newPerson.number };
-        phoneBook.update(updatedPerson).then((returnedPerson) => {
-          setPersons(
-            persons.map((person) =>
-              person.id !== existingPerson.id ? person : returnedPerson
-            )
-          );
-        });
+        phoneBook
+          .update(updatedPerson)
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== existingPerson.id ? person : returnedPerson
+              )
+            );
+          })
+          .catch((error) => {
+            setErrorMessage(
+              `Information of ${existingPerson.name} has been removed from server`
+            );
+          });
       }
     } else {
       phoneBook.create(newPerson).then((returnedPerson) => {
@@ -122,6 +144,7 @@ const App = () => {
   };
   const onCloseMessage = () => {
     setSucessMessage(null);
+    setErrorMessage(null);
   };
   const deletePerson = (e, person) => {
     e.preventDefault();
@@ -137,7 +160,14 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification onCloseMessage={onCloseMessage} message={sucessMessage} />
+      <SuccessNotification
+        onCloseMessage={onCloseMessage}
+        message={sucessMessage}
+      />
+      <ErrorNotification
+        message={errorMessage}
+        onCloseMessage={onCloseMessage}
+      />
       <Filter filterValue={filterValue} filterInput={filterInput} />
       <PersonForm
         onSubmit={onSubmit}
