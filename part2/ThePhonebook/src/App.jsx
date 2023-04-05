@@ -1,6 +1,20 @@
 import { useState, useEffect } from "react";
 import phoneBook from "./services/PhoneBook";
 
+const Notification = ({ message, onCloseMessage }) => {
+  if (!message) {
+    return null;
+  }
+  return (
+    <div className="success">
+      {message}{" "}
+      <button onClick={onCloseMessage} className="closeButton">
+        X
+      </button>
+    </div>
+  );
+};
+
 const PersonForm = ({
   onSubmit,
   newName,
@@ -50,6 +64,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [NewPhoneNumber, setNewPhoneNumber] = useState("");
   const [filterValue, setFilterValue] = useState("");
+  const [sucessMessage, setSucessMessage] = useState("sddd");
 
   useEffect(() => {
     phoneBook.getAll().then((allNumbers) => setPersons(allNumbers));
@@ -95,12 +110,19 @@ const App = () => {
       phoneBook.create(newPerson).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
       });
-
+      setSucessMessage(
+        `${newPerson.name} have been succesfully added to the phonebook`
+      );
+      setTimeout(() => {
+        setSucessMessage(null);
+      }, 5000);
       setNewName("");
       setNewPhoneNumber("");
     }
   };
-
+  const onCloseMessage = () => {
+    setSucessMessage(null);
+  };
   const deletePerson = (e, person) => {
     e.preventDefault();
     window.confirm(`Delete ${person.name}`);
@@ -115,6 +137,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification onCloseMessage={onCloseMessage} message={sucessMessage} />
       <Filter filterValue={filterValue} filterInput={filterInput} />
       <PersonForm
         onSubmit={onSubmit}
