@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import phoneBook from "./services/PhoneBook";
 
 const PersonForm = ({
   onSubmit,
@@ -24,12 +24,13 @@ const PersonForm = ({
   );
 };
 
-const Persons = ({ filteredPersons }) => {
+const Persons = ({ filteredPersons, deletePerson }) => {
   return (
     <>
       {filteredPersons.map((person) => (
         <p key={person.id}>
-          {person.name} {person.number}
+          {person.name} {person.number}{" "}
+          <button onClick={(e) => deletePerson(e, person)}>delete</button>
         </p>
       ))}
     </>
@@ -50,13 +51,9 @@ const App = () => {
   const [NewPhoneNumber, setNewPhoneNumber] = useState("");
   const [filterValue, setFilterValue] = useState("");
 
-  const hook = () => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
-  };
-
-  useEffect(hook, []);
+  useEffect(() => {
+    phoneBook.getAll().then((allNumbers) => setPersons(allNumbers));
+  }, []);
 
   const nameInput = (e) => {
     setNewName(e.target.value);
@@ -73,7 +70,6 @@ const App = () => {
     const newPerson = {
       name: newName,
       number: NewPhoneNumber,
-      id: persons.length + 1,
     };
     if (
       persons.some(
@@ -85,11 +81,22 @@ const App = () => {
         `${newPerson.name} and ${newPerson.number} is already added to the phonebook`
       );
     } else {
-      setPersons(persons.concat(newPerson));
+      phoneBook.create(newPerson).then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+      });
+
       setNewName("");
       setNewPhoneNumber("");
     }
   };
+
+  const deletePerson = (e, person) => {
+    e.preventDefault();
+    window.confirm(`Delete ${person.name}`);
+    phoneBook.deletePerson(person.id);
+    setPersons(persons.filter((p) => p.id !== person.id));
+  };
+
   const filteredPersons = persons.filter((person) =>
     person.name.toLocaleLowerCase().includes(filterValue.toLocaleLowerCase())
   );
@@ -106,7 +113,7 @@ const App = () => {
         NewPhoneNumber={NewPhoneNumber}
       />
       <h2>Numbers</h2>
-      <Persons filteredPersons={filteredPersons} />
+      <Persons deletePerson={deletePerson} filteredPersons={filteredPersons} />
     </div>
   );
 };
