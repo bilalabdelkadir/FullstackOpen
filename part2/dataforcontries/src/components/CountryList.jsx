@@ -1,25 +1,11 @@
-import { useState } from "react";
-
-const ShowSingleCountry = ({ country }) => {
-  return (
-    <div>
-      <p>capital {country.capital}</p>
-      <p>area {country.area}</p>
-
-      <h2>Languages:</h2>
-      <ul>
-        {Object.keys(country.languages).map((key) => (
-          <li key={key}>{country.languages[key]}</li>
-        ))}
-      </ul>
-      <img src={country.flags.png} alt={`${country.name} flag`} />
-    </div>
-  );
-};
+import { useState, useEffect } from "react";
+import weather from "../services/weather";
+import ShowSingleCountry from "./ShowSinbleCountry";
 
 const CountryList = ({ filteredData }) => {
   const [show, setShow] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedWeather, setSelectedWeather] = useState("");
 
   const onShow = (country) => {
     if (selectedCountry) {
@@ -28,8 +14,33 @@ const CountryList = ({ filteredData }) => {
     } else {
       setSelectedCountry(country);
       setShow(!show);
+
+      weather.getWeather(country.latlng[0], country.latlng[1]).then((data) => {
+        setSelectedWeather({
+          temp: data.main.temp,
+          wind: data.wind.speed,
+          icon: data.weather[0].icon,
+        });
+        console.log(selectedWeather);
+      });
     }
   };
+
+  useEffect(() => {
+    if (filteredData.length === 1) {
+      setSelectedCountry(filteredData[0]);
+
+      weather
+        .getWeather(filteredData[0].latlng[0], filteredData[0].latlng[1])
+        .then((data) => {
+          setSelectedWeather({
+            temp: data.main.temp,
+            wind: data.wind.speed,
+            icon: data.weather[0].icon,
+          });
+        });
+    }
+  }, [filteredData]);
 
   if (filteredData.length >= 10)
     return <p>too many matches, specify another filter</p>;
@@ -43,12 +54,16 @@ const CountryList = ({ filteredData }) => {
               <button onClick={() => onShow(country)}>show</button>
             ) : null}
           </h2>
-          {filteredData.length === 1 ? (
-            <ShowSingleCountry country={country} />
-          ) : null}
         </div>
       ))}
-      {selectedCountry && <ShowSingleCountry country={selectedCountry} />}
+      {(selectedCountry || filteredData.length === 1) && (
+        <ShowSingleCountry
+          selectedWeather={selectedWeather}
+          country={
+            filteredData.length === 1 ? filteredData[0] : selectedCountry
+          }
+        />
+      )}
     </>
   );
 };

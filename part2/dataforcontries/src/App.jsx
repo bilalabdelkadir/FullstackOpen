@@ -1,4 +1,5 @@
 import countries from "./services/countries";
+import weather from "./services/weather";
 import { useState, useEffect } from "react";
 import CountryList from "./components/CountryList";
 
