@@ -1,35 +1,6 @@
 import countries from "./services/countries";
 import { useState, useEffect } from "react";
-
-const CountryList = ({ filteredData }) => {
-  if (filteredData.length >= 10)
-    return <p>too many matches, specify another filter</p>;
-  return (
-    <>
-      {filteredData.map((country) => (
-        <div key={country.name.common}>
-          <p>{country.name.common}</p>
-          {filteredData.length === 1 ? (
-            <div>
-              <div>
-                <p>capital {country.capital}</p>
-                <p>area {country.area}</p>
-
-                <h2>Languages:</h2>
-                <ul>
-                  {Object.keys(country.languages).map((key) => (
-                    <li key={key}>{country.languages[key]}</li>
-                  ))}
-                </ul>
-                <img src={country.flags.png} alt={`${country.name} flag`} />
-              </div>
-            </div>
-          ) : null}
-        </div>
-      ))}
-    </>
-  );
-};
+import CountryList from "./components/CountryList";
 
 function App() {
   const [allCountries, setAllCountries] = useState([]);

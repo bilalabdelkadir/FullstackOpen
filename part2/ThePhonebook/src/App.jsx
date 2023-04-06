@@ -1,33 +1,35 @@
 import { useState, useEffect } from "react";
 import phoneBook from "./services/PhoneBook";
+import SuccessNotification from "./components/SuccessNotification";
+import ErrorNotification from "./components/ErrorNotification";
 
-const SuccessNotification = ({ message, onCloseMessage }) => {
-  if (!message) {
-    return null;
-  }
-  return (
-    <div className="success">
-      {message}{" "}
-      <button onClick={onCloseMessage} className="closeButton">
-        X
-      </button>
-    </div>
-  );
-};
+// const SuccessNotification = ({ message, onCloseMessage }) => {
+//   if (!message) {
+//     return null;
+//   }
+//   return (
+//     <div className="success">
+//       {message}{" "}
+//       <button onClick={onCloseMessage} className="closeButton">
+//         X
+//       </button>
+//     </div>
+//   );
+// };
 
-const ErrorNotification = ({ message, onCloseMessage }) => {
-  if (!message) {
-    return null;
-  }
-  return (
-    <div className="error">
-      {message}{" "}
-      <button onClick={onCloseMessage} className="closeButton">
-        X
-      </button>
-    </div>
-  );
-};
+// const ErrorNotification = ({ message, onCloseMessage }) => {
+//   if (!message) {
+//     return null;
+//   }
+//   return (
+//     <div className="error">
+//       {message}{" "}
+//       <button onClick={onCloseMessage} className="closeButton">
+//         X
+//       </button>
+//     </div>
+//   );
+// };
 
 const PersonForm = ({
   onSubmit,
