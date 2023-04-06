@@ -39,6 +39,9 @@ const CountryList = ({ filteredData }) => {
             icon: data.weather[0].icon,
           });
         });
+    } else if (filteredData.length > 1) {
+      setSelectedCountry(null);
+      setSelectedWeather("");
     }
   }, [filteredData]);
 
@@ -51,7 +54,9 @@ const CountryList = ({ filteredData }) => {
           <h2>
             {country.name.common}{" "}
             {filteredData.length > 1 ? (
-              <button onClick={() => onShow(country)}>show</button>
+              <button onClick={() => onShow(country)}>
+                {show ? "close" : "show"}
+              </button>
             ) : null}
           </h2>
         </div>
