@@ -44,6 +44,28 @@ app.get("/api/persons/:id", (req, res) => {
   }
 });
 
+app.get("/info", (req, res) => {
+  const total = persons.length;
+  const now = new Date();
+  const options = {
+    weekday: "short",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    timeZoneName: "long",
+  };
+  const formatter = new Intl.DateTimeFormat("en-US", options);
+  const formattedDate = formatter.format(now);
+  console.log(formattedDate);
+
+  const response = `phonebook has info for ${total} people\n${formattedDate} (${
+    formatter.resolvedOptions().timeZone
+  })`;
+  res.send(response);
+});
+
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
