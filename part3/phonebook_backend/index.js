@@ -1,6 +1,16 @@
 const express = require("express");
+const morgan = require("morgan");
 const app = express();
 app.use(express.json());
+app.use(morgan("tiny"));
+
+morgan.token("data", (request, response) => {
+  return request.method === "POST" ? JSON.stringify(request.body) : " ";
+});
+
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :data")
+);
 const generateId = () => {
   const maxId = persons.length > 0 ? Math.max(...persons.map((p) => p.id)) : 0;
   return maxId + 1;
