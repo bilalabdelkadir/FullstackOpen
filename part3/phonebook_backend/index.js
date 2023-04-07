@@ -1,5 +1,10 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
+const generateId = () => {
+  const maxId = persons.length > 0 ? Math.max(...persons.map((p) => p.id)) : 0;
+  return maxId + 1;
+};
 
 let persons = [
   {
@@ -44,11 +49,44 @@ app.get("/api/persons/:id", (req, res) => {
   }
 });
 
-app.delete("/api/persons/:id", (request, response) => {
+app.post("/api/persons", (req, res) => {
+  const body = req.body;
+
+  if (!body.name) {
+    return res.status(400).json({
+      error: "name missing",
+    });
+  }
+
+  const exist = persons.find((person) => person.name === body.name);
+
+  if (exist) {
+    return res.status(400).json({
+      error: "name must be unique",
+    });
+  }
+
+  if (!body.number) {
+    return res.status(400).json({
+      error: "number missing",
+    });
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId(),
+  };
+
+  persons = persons.concat(person);
+  res.json(person);
+});
+
+app.delete("/api/persons/:id", (req, res) => {
   const id = Number(request.params.id);
   persons = persons.filter((person) => person.id !== id);
 
-  response.status(204).end();
+  res.status(204).end();
 });
 
 app.get("/info", (req, res) => {
