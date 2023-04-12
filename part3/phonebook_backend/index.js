@@ -1,6 +1,8 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+require("dotenv").config();
+const Phone = require("./models/person");
 
 const app = express();
 app.use(express.json());
@@ -15,52 +17,22 @@ morgan.token("data", (request, response) => {
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :data")
 );
-const generateId = () => {
-  const maxId = persons.length > 0 ? Math.max(...persons.map((p) => p.id)) : 0;
-  return maxId + 1;
-};
-
-let persons = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
 
 app.get("/", (req, res) => {
   res.send("hello");
 });
 
 app.get("/api/persons", (req, res) => {
-  res.json(persons);
+  Phone.find({}).then((persons) => {
+    console.log(persons);
+    res.json(persons);
+  });
 });
 
 app.get("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-
-  const person = persons.find((person) => person.id === id);
-
-  if (person) {
+  Phone.findById(req.params.id).then((person) => {
     res.json(person);
-  } else {
-    res.status(404).send("there is no data with this is");
-  }
+  });
 });
 
 app.post("/api/persons", (req, res) => {
@@ -72,13 +44,13 @@ app.post("/api/persons", (req, res) => {
     });
   }
 
-  const exist = persons.find((person) => person.name === body.name);
+  // const exist = Phone.find((person) => person.name === body.name);
 
-  if (exist) {
-    return res.status(400).json({
-      error: "name must be unique",
-    });
-  }
+  // if (exist) {
+  //   return res.status(400).json({
+  //     error: "name must be unique",
+  //   });
+  // }
 
   if (!body.number) {
     return res.status(400).json({
@@ -86,14 +58,14 @@ app.post("/api/persons", (req, res) => {
     });
   }
 
-  const person = {
+  const person = new Phone({
     name: body.name,
     number: body.number,
-    id: generateId(),
-  };
+  });
 
-  persons = persons.concat(person);
-  res.json(person);
+  person.save().then((savedPerson) => {
+    res.json(savedPerson);
+  });
 });
 
 app.delete("/api/persons/:id", (req, res) => {
@@ -125,7 +97,7 @@ app.get("/info", (req, res) => {
   res.send(response);
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

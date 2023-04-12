@@ -9,7 +9,7 @@ const password = process.argv[2];
 const name = process.argv[3];
 const number = process.argv[4];
 
-const url = `mongodb+srv://bilal:${password}@cluster0.hnbqhyh.mongodb.net/phonebook?retryWrites=true&w=majority`;
+const url = `mongodb+srv://bilal:${password}@cluster0.hnbqhyh.mongodb.net/phoneBook?retryWrites=true&w=majority`;
 
 mongoose.set("strictQuery", false);
 mongoose.connect(url);
@@ -19,7 +19,7 @@ const personSchema = new mongoose.Schema({
   number: String,
 });
 
-const Person = mongoose.model("Person", personSchema);
+const Person = mongoose.model("Phone", personSchema);
 
 if (process.argv.length < 5) {
   Person.find({}).then((result) => {
