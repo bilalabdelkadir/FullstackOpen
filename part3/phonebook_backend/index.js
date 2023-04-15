@@ -54,14 +54,6 @@ app.post("/api/persons", (req, res) => {
     });
   }
 
-  // const exist = Phone.find((person) => person.name === body.name);
-
-  // if (exist) {
-  //   return res.status(400).json({
-  //     error: "name must be unique",
-  //   });
-  // }
-
   if (!body.number) {
     return res.status(400).json({
       error: "number missing",
@@ -73,15 +65,46 @@ app.post("/api/persons", (req, res) => {
     number: body.number,
   });
 
-  person.save().then((savedPerson) => {
-    res.json(savedPerson);
-  });
+  person
+    .save()
+    .then((savedPerson) => {
+      res.json(savedPerson);
+    })
+    .catch((error) => next(error));
 });
 
 app.delete("/api/persons/:id", (req, res, next) => {
   Phone.findByIdAndRemove(req.params.id)
     .then((result) => {
       res.status(204).end();
+    })
+    .catch((error) => next(error));
+});
+
+app.put("/api/persons/:id", (req, res, next) => {
+  const body = req.body;
+
+  if (!body.name) {
+    return res.status(400).json({
+      error: "name missing",
+    });
+  }
+
+  if (!body.number) {
+    return res.status(400).json({
+      error: "number missing",
+    });
+  }
+
+  const id = req.params.id;
+
+  Phone.findByIdAndUpdate(
+    id,
+    { name: body.name, number: body.number },
+    { new: true }
+  )
+    .then((updatedPerson) => {
+      res.json(updatedPerson);
     })
     .catch((error) => next(error));
 });
