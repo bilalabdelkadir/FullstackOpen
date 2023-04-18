@@ -15,7 +15,15 @@ const favOne = [
     title: "React patterns",
     author: "Michael Chan",
     url: "https://reactpatterns.com/",
-    likes: 7,
+    likes: 120,
+    __v: 0,
+  },
+  {
+    _id: "5a422a851b54a676234d17f7",
+    title: "Hey patterns",
+    author: "Michael Chan",
+    url: "https://reactpatterns.com/",
+    likes: 20,
     __v: 0,
   },
   {
@@ -85,9 +93,9 @@ describe("favorite blog", () => {
   test("this will give us the most liked blog", () => {
     const result = listHelper.favoriteBlog(favOne);
     expect(result).toEqual({
-      title: "First class tests",
-      author: "Robert C. Martin",
-      likes: 50,
+      title: "React patterns",
+      author: "Michael Chan",
+      likes: 120,
     });
   });
 });
@@ -98,6 +106,16 @@ describe("mostBlogs", () => {
     expect(result).toEqual({
       author: "Robert C. Martin",
       blogs: 4,
+    });
+  });
+});
+
+describe("mostLikes", () => {
+  test(" returns the author with the most likes in one blog and its total blog likes", () => {
+    const result = listHelper.mostLikes(favOne);
+    expect(result).toEqual({
+      author: "Michael Chan",
+      likes: 140,
     });
   });
 });
