@@ -47,7 +47,7 @@ const favOne = [
     title: "TDD harms architecture",
     author: "Robert C. Martin",
     url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
-    likes: 0,
+    likes: 30,
     __v: 0,
   },
   {
@@ -56,6 +56,14 @@ const favOne = [
     author: "Robert C. Martin",
     url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
     likes: 2,
+    __v: 0,
+  },
+  {
+    _id: "5a422bc61b94a676234d17fc",
+    title: "Type of Java",
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+    likes: 23,
     __v: 0,
   },
 ];
@@ -80,6 +88,16 @@ describe("favorite blog", () => {
       title: "First class tests",
       author: "Robert C. Martin",
       likes: 50,
+    });
+  });
+});
+
+describe("mostBlogs", () => {
+  test("returns the author with the most blogs and the count of their blogs", () => {
+    const result = listHelper.mostBlogs(favOne);
+    expect(result).toEqual({
+      author: "Robert C. Martin",
+      blogs: 4,
     });
   });
 });
