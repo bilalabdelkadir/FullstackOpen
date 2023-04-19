@@ -13,6 +13,11 @@ blogRouter.get("/", async (request, response) => {
 // create new blog list
 blogRouter.post("/", (request, response) => {
   const body = request.body;
+
+  if (!body.title || !body.url) {
+    return response.status(400).json({ error: "title or url is required" });
+  }
+
   const newBlog = {
     title: body.title,
     author: body.author,

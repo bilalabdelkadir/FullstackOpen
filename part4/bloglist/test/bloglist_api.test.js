@@ -94,7 +94,15 @@ test("like will have the default 0 if missing", async () => {
   expect(response.body.likes).toBe(0);
 }, 10000);
 
-test;
+test("if title and url missing it will response 400", async () => {
+  const newBlog = {
+    author: "fake author",
+    likes: 23,
+  };
+  const response = await api.post("/api/blogs").send(newBlog);
+
+  expect(response.status).toBe(400);
+});
 
 afterAll(async () => {
   await mongoose.connection.close();
