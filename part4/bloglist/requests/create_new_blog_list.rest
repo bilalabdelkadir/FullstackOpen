@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
     "title": "Another Example",
-    "author": "not bilal Abdelkadir",
+    "author": "nuh fahad",
     "url": "https://github.com/fullstack-hy2020/part3-notes-backend/blob/part4-2/index.js",
-    "likes": 20
+    "likes": 17
 }
