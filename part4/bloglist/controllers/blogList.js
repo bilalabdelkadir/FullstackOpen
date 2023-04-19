@@ -2,10 +2,12 @@ const Blog = require("../models/blogList");
 const blogRouter = require("express").Router();
 
 // get all the blog list
-blogRouter.get("/", (request, response) => {
-  Blog.find({}).then((blogs) => {
-    response.json(blogs);
-  });
+blogRouter.get("/", async (request, response) => {
+  const blogs = await Blog.find({});
+  response.json(blogs);
+  // Blog.find({}).then((blogs) => {
+  //   response.json(blogs);
+  // });
 });
 
 // create new blog list
