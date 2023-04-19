@@ -94,6 +94,8 @@ test("like will have the default 0 if missing", async () => {
   expect(response.body.likes).toBe(0);
 }, 10000);
 
+test;
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
