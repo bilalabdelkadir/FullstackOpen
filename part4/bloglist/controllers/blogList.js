@@ -12,7 +12,14 @@ blogRouter.get("/", async (request, response) => {
 
 // create new blog list
 blogRouter.post("/", (request, response) => {
-  const blog = new Blog(request.body);
+  const body = request.body;
+  const newBlog = {
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes || 0,
+  };
+  const blog = new Blog(newBlog);
 
   blog.save().then((result) => {
     response.status(201).json(result);

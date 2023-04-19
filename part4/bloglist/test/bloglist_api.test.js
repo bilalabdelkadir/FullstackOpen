@@ -82,6 +82,18 @@ test("a valid blog list can be added", async () => {
   expect(titles).toContain("Add test");
 }, 10000);
 
+test("like will have the default 0 if missing", async () => {
+  const newBlog = {
+    title: "blog with out like",
+    author: "fake author",
+    url: "https://this.isfake.url",
+  };
+
+  const response = await api.post("/api/blogs").send(newBlog);
+
+  expect(response.body.likes).toBe(0);
+}, 10000);
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
