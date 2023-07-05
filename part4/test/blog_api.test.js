@@ -71,6 +71,15 @@ test("a blog with no like default value should be 0", async () => {
   expect(response.body.likes).toBe(0);
 });
 
+test("a request with out title or url shoulr response 400", async () => {
+  const blogObject = {
+    author: "bilal",
+    likes: 4,
+  };
+
+  const response = await api.post("/api/blogs").send(blogObject).expect(400);
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
