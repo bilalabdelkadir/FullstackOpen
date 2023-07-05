@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+require("express-async-errors");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const config = require("./utils/config");

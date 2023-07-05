@@ -28,56 +28,76 @@ beforeEach(async () => {
   await blogObject.save();
 });
 
-test("unique identifier property of the blog posts is named id", async () => {
-  const response = await api.get("/api/blogs");
+describe("when there is initial note save", () => {
+  test("all blogs are returned", async () => {
+    const response = await api
+      .get("/api/blogs")
+      .expect("Content-Type", /application\/json/);
 
-  expect(response.body[0].id).toBeDefined();
+    expect(response.body.length == initialBlogs.length);
+  }),
+    test("unique identifier property of the blog posts is named id", async () => {
+      const response = await api.get("/api/blogs");
+
+      expect(response.body[0].id).toBeDefined();
+    });
 });
 
-test("a valid blog can be added", async () => {
-  const blogObject = {
-    title: "this is custom one",
-    author: "bilal",
-    url: "randomone.com",
-    likes: 1,
-  };
+describe("addition of a new note", () => {
+  test("a valid blog can be added", async () => {
+    const blogObject = {
+      title: "this is custom one",
+      author: "bilal",
+      url: "randomone.com",
+      likes: 1,
+    };
 
-  await api
-    .post("/api/blogs")
-    .send(blogObject)
-    .expect(201)
-    .expect("Content-Type", /application\/json/);
+    await api
+      .post("/api/blogs")
+      .send(blogObject)
+      .expect(201)
+      .expect("Content-Type", /application\/json/);
 
-  const response = await api.get("/api/blogs");
+    const response = await api.get("/api/blogs");
 
-  titles = response.body.map((blog) => blog.title);
+    titles = response.body.map((blog) => blog.title);
 
-  expect(response.body).toHaveLength(initialBlogs.length + 1);
-  expect(titles).toContain("this is custom one");
+    expect(response.body).toHaveLength(initialBlogs.length + 1);
+    expect(titles).toContain("this is custom one");
+  });
+  test("a blog with no like default value should be 0", async () => {
+    const blogObject = {
+      title: "this is custom one",
+      author: "bilal",
+      url: "randomone.com",
+    };
+    const response = await api
+      .post("/api/blogs")
+      .send(blogObject)
+      .expect(201)
+      .expect("Content-Type", /application\/json/);
+
+    expect(response.body.likes).toBe(0);
+  });
+  test("fails with status code 400 if data invalid", async () => {
+    const blogObject = {
+      author: "bilal",
+      likes: 4,
+    };
+
+    const response = await api.post("/api/blogs").send(blogObject).expect(400);
+  });
 });
 
-test("a blog with no like default value should be 0", async () => {
-  const blogObject = {
-    title: "this is custom one",
-    author: "bilal",
-    url: "randomone.com",
-  };
-  const response = await api
-    .post("/api/blogs")
-    .send(blogObject)
-    .expect(201)
-    .expect("Content-Type", /application\/json/);
+describe("deletion of notes", () => {
+  test("a valid blog deletion", async () => {
+    const blogId = (await api.get("/api/blogs")).body[0].id;
 
-  expect(response.body.likes).toBe(0);
-});
+    const deltedBlog = await api.delete(`/api/blogs/${blogId}`).expect(204);
 
-test("a request with out title or url shoulr response 400", async () => {
-  const blogObject = {
-    author: "bilal",
-    likes: 4,
-  };
-
-  const response = await api.post("/api/blogs").send(blogObject).expect(400);
+    const blogs = (await api.get("/api/blogs")).body;
+    expect(blogs.length).toBe(initialBlogs.length - 1);
+  });
 });
 
 afterAll(async () => {
