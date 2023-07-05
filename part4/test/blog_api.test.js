@@ -89,7 +89,7 @@ describe("addition of a new note", () => {
   });
 });
 
-describe("deletion of notes", () => {
+describe("deletion of blogs", () => {
   test("a valid blog deletion", async () => {
     const blogId = (await api.get("/api/blogs")).body[0].id;
 
@@ -97,6 +97,21 @@ describe("deletion of notes", () => {
 
     const blogs = (await api.get("/api/blogs")).body;
     expect(blogs.length).toBe(initialBlogs.length - 1);
+  });
+});
+
+describe("updating blogs", () => {
+  test("a valid update blog", async () => {
+    const blogObject = {
+      likes: 9,
+    };
+
+    const blogId = (await api.get("/api/blogs")).body[0].id;
+    const response = await api
+      .put(`/api/blogs/${blogId}`)
+      .send(blogObject)
+      .expect(200);
+    expect(response.body.likes).toBe(9);
   });
 });
 
