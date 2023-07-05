@@ -1,0 +1,39 @@
+const supertest = require("supertest");
+const mongoose = require("mongoose");
+const Blog = require("../models/blog");
+const app = require("../app");
+
+const api = supertest(app);
+
+const initialBlogs = [
+  {
+    title: "this is first one",
+    author: "bilal",
+    url: "randomone.com",
+    likes: 5,
+  },
+  {
+    title: "this is second one",
+    author: "fahad",
+    url: "randomtwo.com",
+    likes: 2,
+  },
+];
+
+beforeEach(async () => {
+  await Blog.deleteMany({});
+  let blogObject = new Blog(initialBlogs[0]);
+  await blogObject.save();
+  blogObject = new Blog(initialBlogs[1]);
+  await blogObject.save();
+});
+
+test("unique identifier property of the blog posts is named id", async () => {
+  const response = await api.get("/api/blogs");
+
+  expect(response.body[0].id).toBeDefined();
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
