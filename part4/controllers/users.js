@@ -1,38 +1,53 @@
-const User = require("../models/users");
-const userRouter = require("express").Router();
-const bcrypt = require("bcrypt");
+const userRouter = require('express').Router()
+const User = require('../models/users')
+require('express-async-errors')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
-userRouter.post("/", async (request, response) => {
-  const { username, name, password } = request.body;
+userRouter.get('/', async (request, response) => {
+    let users = await User.find({}).populate('blogs', {title: 1, likes: 1, author: 1, url: 1})
+    response.json(users)
+  })
 
-  if (username.length < 3 || name.length < 3) {
-    return response
-      .status(400)
-      .json({ message: "username and user must be longer than 3 char" });
+userRouter.post('/', async (request, response) => {
+  const { username, name, password} = request.body
+
+  if (!(username && password)) {
+    return response.status(400).json(
+        { error: 'Please provide username and password'}
+        )
+  } else if (password.length < 3) {
+    return response.status(400).json(
+        { error: 'password should be atleast 3 char long'}
+        )
   }
 
-  const saltRounds = 10;
-  const passwordHash = await bcrypt.hash(password, saltRounds);
+  let saltRound = 10
 
-  const user = new User({
+  let passwordHash = await bcrypt.hash(password, saltRound)
+
+  const newUser = {
     username,
     name,
     passwordHash,
-  });
+    blogs: []
+  }
 
-  const savedUser = await user.save();
+  const user = new User(newUser)
 
-  response.status(201).json(savedUser);
-});
+  let savedUser = await user.save()
+  
+  let userForToken = {
+    username: savedUser.username,
+    id: savedUser._id.toString()
+  }
 
-userRouter.get("/", async (request, response) => {
-  const users = await User.find({}).populate("blogs", {
-    url: 1,
-    title: 1,
-    auther: 1,
-    id: 1,
-  });
-  response.status(200).json(users);
-});
+  let singedToken = jwt.sign(userForToken, process.env.SECRET)
 
-module.exports = userRouter;
+  response.status(201).json(
+    {token: singedToken, username: savedUser.username, name: savedUser.name}
+  )
+})
+
+
+module.exports = userRouter
